@@ -19,12 +19,12 @@ public class PatientQueriesEpicFhir
 {
     public static void main( String[] args )
     {
-        String ServerBase = "http://hapi.fhir.org/baseDstu3";
+        String ServerBase = "http://hapi.fhir.org/baseR4";
         FhirContext ctx = FhirContext.forR4();
         IGenericClient client = ctx.newRestfulGenericClient(ServerBase);
 
         // Read patient using MRN
-        String mrn = "1425674";
+        String mrn = "40583";
         Patient patient;
         try{
             patient = client.read().resource(Patient.class).withId(mrn).execute();
@@ -40,7 +40,7 @@ public class PatientQueriesEpicFhir
     
         //------------------------------------------------------------------------------------------
         //  Search for Patient resources with the family name Smith and print the results
-        String familyName="Smith";
+        String familyName="James";
         Bundle queryResponse,nextPage;
         try{
             queryResponse = client.search()
@@ -48,8 +48,8 @@ public class PatientQueriesEpicFhir
                             .where(Patient.FAMILY.matches().value(familyName))
                             .returnBundle(Bundle.class)
                             .execute();
-            System.out.println("Patient with Family name Smith: ");
-            System.out.println(ctx.newXmlParser().encodeResourceToString(queryResponse));
+            System.out.println("Patient with Family name James: ");
+            System.out.println(ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(queryResponse));
         } catch (ResourceNotFoundException e){
             System.out.println("Search for thr patient resource not Found!");
             return;
@@ -61,11 +61,11 @@ public class PatientQueriesEpicFhir
                         .next(queryResponse)
                         .execute();
 
-            System.out.println("Patient response for next page for Smith: ");
-            System.out.println(ctx.newXmlParser().encodeResourceToString(nextPage));
+            System.out.println("Patient response for next page for James: ");
+            System.out.println(ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(nextPage));
 
         }catch (ResourceNotFoundException e){
-            System.out.println("Patient response for next page for Smith not Found!");
+            System.out.println("Patient response for next page for James not Found!");
             return;
         }
 
